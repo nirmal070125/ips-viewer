@@ -1,14 +1,20 @@
-
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { useToast } from '@/components/ui/use-toast';
-import { Loader2, AlertTriangle, User, PillIcon, Heart } from 'lucide-react';
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+import { Loader2, AlertTriangle, User, PillIcon, Heart } from "lucide-react";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
 
 const PatientViewer = () => {
-  const [patientId, setPatientId] = useState('');
+  const [patientId, setPatientId] = useState("");
   const [patientData, setPatientData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,27 +34,32 @@ const PatientViewer = () => {
       setLoading(true);
       setError(null);
       setPatientData(null);
-      
-      const response = await fetch(`https://build.fhir.org/ig/HL7/fhir-ips/Bundle-bundle-minimal.json`);
-      
+
+      const response = await fetch(
+        `https://build.fhir.org/ig/HL7/fhir-ips/Bundle-bundle-minimal.json`
+      );
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       setPatientData(data);
-      
+
       toast({
         title: "Success",
         description: "Patient summary retrieved",
       });
     } catch (err) {
-      console.error('Error fetching patient data:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch patient data');
-      
+      console.error("Error fetching patient data:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch patient data"
+      );
+
       toast({
         title: "Error",
-        description: err instanceof Error ? err.message : 'Failed to fetch patient data',
+        description:
+          err instanceof Error ? err.message : "Failed to fetch patient data",
         variant: "destructive",
       });
     } finally {
@@ -58,65 +69,72 @@ const PatientViewer = () => {
 
   const extractPatientInfo = (data: any) => {
     if (!data || !data.entry) return null;
-    
-    const patientEntry = data.entry.find((entry: any) => 
-      entry.resource && entry.resource.resourceType === 'Patient'
+
+    const patientEntry = data.entry.find(
+      (entry: any) =>
+        entry.resource && entry.resource.resourceType === "Patient"
     );
-    
+
     if (!patientEntry) return null;
     return patientEntry.resource;
   };
 
   const extractAllergies = (data: any) => {
     if (!data || !data.entry) return [];
-    
-    const composition = data.entry.find((entry: any) => 
-      entry.resource && entry.resource.resourceType === 'Composition'
+
+    const composition = data.entry.find(
+      (entry: any) =>
+        entry.resource && entry.resource.resourceType === "Composition"
     );
-    
+
     if (!composition || !composition.resource.section) return [];
-    
-    const allergySection = composition.resource.section.find((section: any) => 
-      section.title === 'Allergies and Intolerances'
+
+    const allergySection = composition.resource.section.find(
+      (section: any) => section.title === "Allergies and Intolerances"
     );
-    
+
     if (!allergySection || !allergySection.entry) return [];
-    
-    const allergyEntries = allergySection.entry.map((entry: any) => {
-      const reference = entry.reference;
-      return data.entry.find((e: any) => 
-        e.fullUrl === reference
-      )?.resource;
-    }).filter(Boolean);
-    
+
+    const allergyEntries = allergySection.entry
+      .map((entry: any) => {
+        const reference = entry.reference;
+        return data.entry.find((e: any) => e.fullUrl === reference)?.resource;
+      })
+      .filter(Boolean);
+
     return allergyEntries;
   };
 
   const extractMedications = (data: any) => {
     if (!data || !data.entry) return [];
-    
-    const medicationStatements = data.entry.filter((entry: any) => 
-      entry.resource && entry.resource.resourceType === 'MedicationStatement'
+
+    const medicationStatements = data.entry.filter(
+      (entry: any) =>
+        entry.resource && entry.resource.resourceType === "MedicationStatement"
     );
-    
-    const medications = data.entry.filter((entry: any) => 
-      entry.resource && entry.resource.resourceType === 'Medication'
+
+    const medications = data.entry.filter(
+      (entry: any) =>
+        entry.resource && entry.resource.resourceType === "Medication"
     );
-    
+
     return medicationStatements.map((statement: any) => {
       const resource = statement.resource;
-      
+
       let medicationInfo = null;
-      if (resource.medicationReference && resource.medicationReference.reference) {
+      if (
+        resource.medicationReference &&
+        resource.medicationReference.reference
+      ) {
         const medicationRef = resource.medicationReference.reference;
-        medicationInfo = medications.find((med: any) => 
-          med.fullUrl === medicationRef
+        medicationInfo = medications.find(
+          (med: any) => med.fullUrl === medicationRef
         )?.resource;
       }
-      
+
       return {
         statement: resource,
-        medication: medicationInfo
+        medication: medicationInfo,
       };
     });
   };
@@ -124,7 +142,7 @@ const PatientViewer = () => {
   const renderPatientInfo = () => {
     const patient = extractPatientInfo(patientData);
     if (!patient) return <p>No patient information available</p>;
-    
+
     return (
       <Card className="mb-6">
         <CardHeader>
@@ -137,7 +155,8 @@ const PatientViewer = () => {
             <div className="p-3 bg-blue-50 rounded-lg">
               <p className="text-sm font-medium text-gray-500">Full Name</p>
               <p className="text-lg font-semibold">
-                {patient.name?.[0]?.given?.join(' ')} {patient.name?.[0]?.family}
+                {patient.name?.[0]?.given?.join(" ")}{" "}
+                {patient.name?.[0]?.family}
               </p>
             </div>
             <div className="p-3 bg-blue-50 rounded-lg">
@@ -151,7 +170,11 @@ const PatientViewer = () => {
             <div className="p-3 bg-blue-50 rounded-lg">
               <p className="text-sm font-medium text-gray-500">Address</p>
               <p className="text-lg">
-                {patient.address?.[0]?.line?.join(', ') || 'N/A'}{patient.address?.[0]?.line ? ', ' : ''}{patient.address?.[0]?.city || ''}{patient.address?.[0]?.city ? ', ' : ''}{patient.address?.[0]?.postalCode || ''}
+                {patient.address?.[0]?.line?.join(", ") || "N/A"}
+                {patient.address?.[0]?.line ? ", " : ""}
+                {patient.address?.[0]?.city || ""}
+                {patient.address?.[0]?.city ? ", " : ""}
+                {patient.address?.[0]?.postalCode || ""}
               </p>
             </div>
           </div>
@@ -162,21 +185,23 @@ const PatientViewer = () => {
 
   const renderAllergies = () => {
     const allergies = extractAllergies(patientData);
-    if (!allergies || allergies.length === 0) return (
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold text-red-600 flex items-center">
-            <AlertTriangle className="h-5 w-5 mr-2" /> Allergies & Intolerances
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="p-4 text-center">
-            <p className="text-lg">No allergy information available</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-    
+    if (!allergies || allergies.length === 0)
+      return (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold text-red-600 flex items-center">
+              <AlertTriangle className="h-5 w-5 mr-2" /> Allergies &
+              Intolerances
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="p-4 text-center">
+              <p className="text-lg">No allergy information available</p>
+            </div>
+          </CardContent>
+        </Card>
+      );
+
     return (
       <Card className="mb-6">
         <CardHeader>
@@ -196,19 +221,27 @@ const PatientViewer = () => {
             </TableHeader>
             <TableBody>
               {allergies.map((allergy: any, index: number) => (
-                <TableRow key={index} className={allergy.criticality === 'high' ? 'bg-red-50' : ''}>
+                <TableRow
+                  key={index}
+                  className={allergy.criticality === "high" ? "bg-red-50" : ""}
+                >
                   <TableCell className="font-medium">
-                    {allergy.code?.coding?.[0]?.display || 'Unknown'}
+                    {allergy.code?.coding?.[0]?.display || "Unknown"}
                   </TableCell>
                   <TableCell>
-                    {allergy.reaction?.[0]?.manifestation?.[0]?.coding?.[0]?.display || 'Not specified'}
+                    {allergy.reaction?.[0]?.manifestation?.[0]?.coding?.[0]
+                      ?.display || "Not specified"}
                   </TableCell>
                   <TableCell>
-                    {allergy.criticality === 'high' ? 
-                      <span className="text-red-600 font-semibold">High</span> : 
-                      allergy.criticality || 'Not specified'}
+                    {allergy.criticality === "high" ? (
+                      <span className="text-red-600 font-semibold">High</span>
+                    ) : (
+                      allergy.criticality || "Not specified"
+                    )}
                   </TableCell>
-                  <TableCell>{allergy.clinicalStatus?.coding?.[0]?.code || 'Unknown'}</TableCell>
+                  <TableCell>
+                    {allergy.clinicalStatus?.coding?.[0]?.code || "Unknown"}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -220,21 +253,22 @@ const PatientViewer = () => {
 
   const renderMedications = () => {
     const medications = extractMedications(patientData);
-    if (!medications || medications.length === 0) return (
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold text-green-600 flex items-center">
-            <PillIcon className="h-5 w-5 mr-2" /> Medications
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="p-4 text-center">
-            <p className="text-lg">No medication information available</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-    
+    if (!medications || medications.length === 0)
+      return (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold text-green-600 flex items-center">
+              <PillIcon className="h-5 w-5 mr-2" /> Medications
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="p-4 text-center">
+              <p className="text-lg">No medication information available</p>
+            </div>
+          </CardContent>
+        </Card>
+      );
+
     return (
       <Card className="mb-6">
         <CardHeader>
@@ -256,27 +290,30 @@ const PatientViewer = () => {
               {medications.map((med: any, index: number) => {
                 const statement = med.statement;
                 const medication = med.medication;
-                
-                const medicationName = medication?.code?.coding?.[0]?.display || 
-                                      statement.medicationCodeableConcept?.coding?.[0]?.display || 
-                                      'Unknown';
-                
+
+                const medicationName =
+                  medication?.code?.coding?.[0]?.display ||
+                  statement.medicationCodeableConcept?.coding?.[0]?.display ||
+                  "Unknown";
+
                 return (
                   <TableRow key={index}>
                     <TableCell className="font-medium">
                       {medicationName}
                     </TableCell>
                     <TableCell>
-                      {statement.dosage?.[0]?.doseAndRate?.[0]?.doseQuantity?.value || 'Not specified'}
-                      {' '}
-                      {statement.dosage?.[0]?.doseAndRate?.[0]?.doseQuantity?.unit || ''}
+                      {statement.dosage?.[0]?.doseAndRate?.[0]?.doseQuantity
+                        ?.value || "Not specified"}{" "}
+                      {statement.dosage?.[0]?.doseAndRate?.[0]?.doseQuantity
+                        ?.unit || ""}
                     </TableCell>
                     <TableCell>
-                      {statement.dosage?.[0]?.timing?.code?.coding?.[0]?.display || 
-                       statement.dosage?.[0]?.timing?.code?.text || 
-                       'Not specified'}
+                      {statement.dosage?.[0]?.timing?.code?.coding?.[0]
+                        ?.display ||
+                        statement.dosage?.[0]?.timing?.code?.text ||
+                        "Not specified"}
                     </TableCell>
-                    <TableCell>{statement.status || 'Unknown'}</TableCell>
+                    <TableCell>{statement.status || "Unknown"}</TableCell>
                   </TableRow>
                 );
               })}
@@ -299,17 +336,18 @@ const PatientViewer = () => {
               placeholder="Enter Patient ID"
               className="flex-1"
             />
-            <Button 
-              onClick={fetchPatientData} 
+            <Button
+              onClick={fetchPatientData}
               disabled={loading}
               className="bg-teal-600 hover:bg-teal-700 transition-colors"
             >
               {loading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Retrieving...
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                  Retrieving...
                 </>
               ) : (
-                'Retrieve Patient Summary'
+                "Retrieve Patient Summary"
               )}
             </Button>
           </div>
