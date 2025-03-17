@@ -7,23 +7,19 @@ const Index = () => {
       <div className="container mx-auto px-4 py-10">
         <header className="mb-10 text-center">
           <h1 className="text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-blue-600">
-            Paramedic Patient Summary
+            Patient Summary View
           </h1>
           <p className="text-lg text-slate-600 dark:text-slate-300">
             Quick access to critical patient health information
           </p>
         </header>
-        
+
         <div className="flex justify-center">
           <PatientViewer />
         </div>
-        
         <footer className="mt-16 text-center text-sm text-slate-500">
           <p className="mb-2">
-            Enter a patient ID to retrieve their health summary
-          </p>
-          <p>
-            <span className="text-teal-600">Note:</span> This demo uses a sample FHIR patient record
+            Enter a patient ID to retrieve their health summary.
           </p>
         </footer>
       </div>
