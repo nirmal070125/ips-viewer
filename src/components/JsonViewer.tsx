@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { useAuth } from "./AuthProvider";
 import { Navigate } from "react-router-dom";
+import { apiUrl } from "../../public/read-config"
 
 const PatientViewer = () => {
   const { isAuthenticated } = useAuth();
@@ -38,8 +39,7 @@ const PatientViewer = () => {
       setError(null);
       setPatientData(null);
 
-      const response = await fetch(
-        `https://build.fhir.org/ig/HL7/fhir-ips/Bundle-bundle-minimal.json`
+      const response = await fetch(apiUrl + "/patient/" + patientId + "/summary"
       );
 
       if (!response.ok) {
