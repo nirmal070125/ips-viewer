@@ -120,7 +120,7 @@ const PatientViewer = () => {
     if (!composition || !composition.resource.section) return [];
 
     const medicationRequest = composition.resource.section.find(
-      (section: any) => section.title === "MedicationRequest"
+      (section: any) => section.title === "Medications"
     );
     console.log(medicationRequest);
     if (!medicationRequest || !medicationRequest.entry) return [];
