@@ -102,7 +102,7 @@ const PatientViewer = () => {
       .map((entry: any) => {
         const reference = entry.reference.split("/")[1];
         console.log(reference);
-        return data.entry.find((e: any) => e.fullUrl.includes(reference))?.resource;
+        return data.entry.find((e: any) => e.fullUrl && e.fullUrl.includes(reference))?.resource;
       })
       .filter(Boolean);
 
