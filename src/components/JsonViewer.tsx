@@ -106,7 +106,8 @@ const PatientViewer = () => {
       })
       .filter(Boolean);
 
-    return allergyEntries;
+    // FIXME temporary fix to only show the first allergy
+    return [allergyEntries[0]];
   };
 
   const extractMedications = (data: any) => {
@@ -133,7 +134,8 @@ const PatientViewer = () => {
       })
       .filter(Boolean);
 
-    return medicationEntries;
+    // FIXME temporary fix to only show the first medication
+    return [medicationEntries[0]];
   };
 
   const renderPatientInfo = () => {
