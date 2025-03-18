@@ -11,7 +11,7 @@ export default function LoginPage() {
     >
       <Card className="w-96 shadow-lg bg-white bg-opacity-95 border border-gray-300">
         <CardHeader>
-          <CardTitle className="text-center text-blue-700">
+          <CardTitle className="text-center text-xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-blue-600">
             Patient Summary View
           </CardTitle>
         </CardHeader>
