@@ -100,8 +100,8 @@ const PatientViewer = () => {
 
     const allergyEntries = allergySection.entry
       .map((entry: any) => {
-        const reference = entry.reference;
-        return data.entry.find((e: any) => e.fullUrl === reference)?.resource;
+        const reference = entry.reference.split("/")[1];
+        return data.entry.find((e: any) => e.fullUrl.includes(reference))?.resource;
       })
       .filter(Boolean);
 
