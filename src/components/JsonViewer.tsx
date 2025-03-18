@@ -93,7 +93,7 @@ const PatientViewer = () => {
     if (!composition || !composition.resource.section) return [];
 
     const allergySection = composition.resource.section.find(
-      (section: any) => section.title === "Allergies and Intolerances"
+      (section: any) => section.title === "Allergies"
     );
 
     if (!allergySection || !allergySection.entry) return [];
