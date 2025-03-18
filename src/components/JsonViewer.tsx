@@ -119,13 +119,13 @@ const PatientViewer = () => {
     console.log(composition);
     if (!composition || !composition.resource.section) return [];
 
-    const allergySection = composition.resource.section.find(
+    const medicationRequest = composition.resource.section.find(
       (section: any) => section.title === "MedicationRequest"
     );
-    console.log(allergySection);
-    if (!allergySection || !allergySection.entry) return [];
+    console.log(medicationRequest);
+    if (!medicationRequest || !medicationRequest.entry) return [];
 
-    const allergyEntries = allergySection.entry
+    const medicationEntries = medicationRequest.entry
       .map((entry: any) => {
         const reference = entry.reference.split("/")[1];
         console.log(reference);
@@ -133,7 +133,7 @@ const PatientViewer = () => {
       })
       .filter(Boolean);
 
-    return allergyEntries;
+    return medicationEntries;
   };
 
   const renderPatientInfo = () => {
