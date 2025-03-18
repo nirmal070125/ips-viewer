@@ -39,7 +39,7 @@ const PatientViewer = () => {
       setError(null);
       setPatientData(null);
 
-      const response = await fetch(apiUrl + patientId + "/summary"
+      const response = await fetch(apiUrl + "/" + patientId + "/summary"
       );
 
       if (!response.ok) {
