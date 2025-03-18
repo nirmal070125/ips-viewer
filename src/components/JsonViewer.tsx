@@ -89,18 +89,19 @@ const PatientViewer = () => {
       (entry: any) =>
         entry.resource && entry.resource.resourceType === "Composition"
     );
-
+    console.log(composition);
     if (!composition || !composition.resource.section) return [];
 
     const allergySection = composition.resource.section.find(
       (section: any) => section.title === "Allergies"
     );
-
+    console.log(allergySection);
     if (!allergySection || !allergySection.entry) return [];
 
     const allergyEntries = allergySection.entry
       .map((entry: any) => {
         const reference = entry.reference.split("/")[1];
+        console.log(reference);
         return data.entry.find((e: any) => e.fullUrl.includes(reference))?.resource;
       })
       .filter(Boolean);
