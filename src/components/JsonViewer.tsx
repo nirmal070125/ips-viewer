@@ -287,12 +287,10 @@ const PatientViewer = () => {
             </TableHeader>
             <TableBody>
               {medications.map((med: any, index: number) => {
-                const statement = med.statement;
-                const medication = med.medication;
 
                 const medicationName =
-                  medication?.code?.coding?.[0]?.display ||
-                  statement.medicationCodeableConcept?.coding?.[0]?.display ||
+                  med?.code?.coding?.[0]?.display ||
+                  med.medicationCodeableConcept?.coding?.[0]?.display ||
                   "Unknown";
 
                 return (
@@ -301,18 +299,17 @@ const PatientViewer = () => {
                       {medicationName}
                     </TableCell>
                     <TableCell>
-                      {statement.dosage?.[0]?.doseAndRate?.[0]?.doseQuantity
+                      {med.dosageInstruction?.[0]?.doseAndRate?.[0]?.doseQuantity
                         ?.value || "Not specified"}{" "}
-                      {statement.dosage?.[0]?.doseAndRate?.[0]?.doseQuantity
+                      {med.dosage?.[0]?.doseAndRate?.[0]?.doseQuantity
                         ?.unit || ""}
                     </TableCell>
                     <TableCell>
-                      {statement.dosage?.[0]?.timing?.code?.coding?.[0]
+                      {med.dosageInstruction?.[0]?.route?.coding?.[0]
                         ?.display ||
-                        statement.dosage?.[0]?.timing?.code?.text ||
                         "Not specified"}
                     </TableCell>
-                    <TableCell>{statement.status || "Unknown"}</TableCell>
+                    <TableCell>{med.status || "Unknown"}</TableCell>
                   </TableRow>
                 );
               })}
