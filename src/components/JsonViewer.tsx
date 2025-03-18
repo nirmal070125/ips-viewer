@@ -112,35 +112,28 @@ const PatientViewer = () => {
   const extractMedications = (data: any) => {
     if (!data || !data.entry) return [];
 
-    const medicationStatements = data.entry.filter(
+    const composition = data.entry.find(
       (entry: any) =>
-        entry.resource && entry.resource.resourceType === "MedicationStatement"
+        entry.resource && entry.resource.resourceType === "Composition"
     );
+    console.log(composition);
+    if (!composition || !composition.resource.section) return [];
 
-    const medications = data.entry.filter(
-      (entry: any) =>
-        entry.resource && entry.resource.resourceType === "Medication"
+    const allergySection = composition.resource.section.find(
+      (section: any) => section.title === "MedicationRequest"
     );
+    console.log(allergySection);
+    if (!allergySection || !allergySection.entry) return [];
 
-    return medicationStatements.map((statement: any) => {
-      const resource = statement.resource;
+    const allergyEntries = allergySection.entry
+      .map((entry: any) => {
+        const reference = entry.reference.split("/")[1];
+        console.log(reference);
+        return data.entry.find((e: any) => e.fullUrl && e.fullUrl.includes(reference))?.resource;
+      })
+      .filter(Boolean);
 
-      let medicationInfo = null;
-      if (
-        resource.medicationReference &&
-        resource.medicationReference.reference
-      ) {
-        const medicationRef = resource.medicationReference.reference;
-        medicationInfo = medications.find(
-          (med: any) => med.fullUrl === medicationRef
-        )?.resource;
-      }
-
-      return {
-        statement: resource,
-        medication: medicationInfo,
-      };
-    });
+    return allergyEntries;
   };
 
   const renderPatientInfo = () => {
