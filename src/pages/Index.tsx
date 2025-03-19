@@ -32,7 +32,7 @@ const Index = () => {
         </div>
         <footer className="mt-16 text-center text-sm text-slate-500">
           <p className="mb-2">
-            Enter a patient ID to retrieve their health summary.
+            Enter a patient ID to retrieve their health summary. Sample unique patient ids: UP001, UP002.
           </p>
         </footer>
       </div>

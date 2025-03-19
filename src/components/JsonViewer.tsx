@@ -43,6 +43,11 @@ const PatientViewer = () => {
       );
 
       if (!response.ok) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch patient data",
+          variant: "destructive",
+        });
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
